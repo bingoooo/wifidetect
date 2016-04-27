@@ -16,6 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+// var appState = {
+//     takingPicture: true,
+//     imageUri: ""
+// };
+
+// var APP_STORAGE_KEY = "exampleAppState";
+
+var map = L.map('map');
+
+// mapboxgl.accessToken = 'pk.eyJ1Ijoib2JlaW5nIiwiYSI6ImNpbmplcDludjAwNTZ3ZGtsd2R2ejl0cTYifQ.v-S7CcsGW6ASvrQVPlYvKQ';
+// var map = new mapboxgl.Map({
+//     container: 'map', // container id
+//     style: 'mapbox://styles/mapbox/streets-v8', //stylesheet location
+//     center: [-74.50, 40], // starting position
+//     zoom: 9 // starting zoom
+// });
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -33,7 +50,8 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        app.receivedEvent('deviceready');
+        app.displayMap();
+        // app.receivedEvent('deviceready');
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -45,6 +63,27 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
+    },
+    displayMap: function(){
+
+        L.tileLayer('https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            maxZoom: 26,
+            id: 'wifidetect',
+            accessToken: 'pk.eyJ1Ijoib2JlaW5nIiwiYSI6ImNpbmpmYjY1eTAwNXF3MmtsN2I4bWwyN3gifQ.rzppEAcwRd89bvCmZGLWig'
+        }).addTo(map);
+        map.locate({setView: true, maxZoom: 16});
+
+        map.on('locationfound', app.onLocationFound);
+        map.on('locationerror', app.onLocationError);
+    },
+    onLocationFound: function(e){
+        var radius = e.accuracy / 2;
+        L.marker(e.latlng).addTo(map).bindPopup("You are within " + radius + " meters from this point").openPopup();
+        L.circle(e.latlng, radius).addTo(map);
+    },
+    onLocationError: function(e){
+        alert(e.message);
     }
 };
 
