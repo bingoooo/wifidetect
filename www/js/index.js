@@ -25,6 +25,7 @@
 
 var map = L.map('map');
 var mapCenter;
+var userPos;
 var routerPos;
 var circle;
 
@@ -70,10 +71,8 @@ var app = {
         map.on('click', app.displayCircle);
     },
     onLocationFound: function(e){
-        var radius = e.accuracy / 2;
-        L.marker(e.latlng).addTo(map).bindPopup("You are within " + radius + " meters from this point")
-        .openPopup();
-        L.circle(e.latlng, radius).addTo(map);
+        userPos = e.latlong;
+        console.log('Vos coordonnées GPS', userPos);
     },
     onLocationError: function(e){
         alert(e.message);
