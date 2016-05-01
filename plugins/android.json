@@ -12,6 +12,9 @@
         },
         "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "com.simplonco.benji.wifidetect"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.simplonco.benji.wifidetect"
         }
     },
     "dependent_plugins": {

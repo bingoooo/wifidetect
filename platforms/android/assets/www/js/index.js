@@ -24,6 +24,10 @@
 // var APP_STORAGE_KEY = "exampleAppState";
 
 var map = L.map('map');
+var mapCenter;
+var userPos;
+var routerPos;
+var circle;
 
 // mapboxgl.accessToken = 'pk.eyJ1Ijoib2JlaW5nIiwiYSI6ImNpbmplcDludjAwNTZ3ZGtsd2R2ejl0cTYifQ.v-S7CcsGW6ASvrQVPlYvKQ';
 // var map = new mapboxgl.Map({
@@ -51,39 +55,46 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.displayMap();
-        // app.receivedEvent('deviceready');
-    },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
-
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
     },
     displayMap: function(){
-
         L.tileLayer('https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
             maxZoom: 26,
             id: 'wifidetect',
             accessToken: 'pk.eyJ1Ijoib2JlaW5nIiwiYSI6ImNpbmpmYjY1eTAwNXF3MmtsN2I4bWwyN3gifQ.rzppEAcwRd89bvCmZGLWig'
         }).addTo(map);
+        console.log(map);
         map.locate({setView: true, maxZoom: 16});
 
         map.on('locationfound', app.onLocationFound);
         map.on('locationerror', app.onLocationError);
+        map.on('click', app.displayCircle);
     },
     onLocationFound: function(e){
-        var radius = e.accuracy / 2;
-        L.marker(e.latlng).addTo(map).bindPopup("You are within " + radius + " meters from this point").openPopup();
-        L.circle(e.latlng, radius).addTo(map);
+        userPos = e.latlong;
+        console.log('Vos coordonnées GPS', userPos);
     },
     onLocationError: function(e){
         alert(e.message);
+    },
+    displayCircle: function(e){
+        // dessiner les points sur la carte
+        console.log(e);
+        circle = L.circle(e.latlng, 2, {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5
+        }).addTo(map);
+        console.log(circle);
+    },
+    onMapClick: function(e){
+        // Ajouter un point sur la carte
+    },
+    onDelete: function(){
+        // supprimer le dernier point
+    },
+    onSetRouter: function(e){
+        routerPos = e.latlng;
     }
 };
 
