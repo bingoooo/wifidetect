@@ -29,14 +29,6 @@ var userPos;
 var routerPos;
 var circle;
 
-// mapboxgl.accessToken = 'pk.eyJ1Ijoib2JlaW5nIiwiYSI6ImNpbmplcDludjAwNTZ3ZGtsd2R2ejl0cTYifQ.v-S7CcsGW6ASvrQVPlYvKQ';
-// var map = new mapboxgl.Map({
-//     container: 'map', // container id
-//     style: 'mapbox://styles/mapbox/streets-v8', //stylesheet location
-//     center: [-74.50, 40], // starting position
-//     zoom: 9 // starting zoom
-// });
-
 var app = {
     // Application Constructor
     initialize: function() {
@@ -48,13 +40,53 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
+        document.addEventListener('pause', this.onPause, false);
+        document.addEventListener('resume', this.onResume, false);
+        document.addEventListener('load', this.onLoad, false);
     },
-    // deviceready Event Handler
-    //
+    onLoad: function(){
+        app.displayLoad();
+    },
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
+    // function, we must explicitly call 'app.receivedEvent(...);
     onDeviceReady: function() {
         app.displayMap();
+        app.displayWifi("No Level");
+    },
+    onPause: function() {
+        window.alert = function(message) {
+            navigator.notification.alert(
+                message,
+                null,
+                "Wifi Detct",
+                'Ok'
+            );
+        };
+    },
+    onResume: function(){
+        navigator.notification.alert(
+            "Application Resumed",
+            null,
+            "Wifi Detect",
+            'Ok'
+        );
+    },
+    displayWifi: function(level){
+        // Fonction d'affichage de la barre de niveau wifi (canvas)
+        var canvas = document.getElementById('wifi');
+        var ctx = document.getElementById('wifi').getContext("2d");
+        ctx.font = "12px serif";
+        ctx.fillStyle = "red";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillText = (level, canvas.width / 2, canvas.height / 2);
+        ctx.fillStyle = "black";
+        ctx.stroke();
+        var infos = document.getElementById('gps-infos');
+        var infos =  document.getElementById('wifi-infos');
+        var wifi = cordova.plugins;
+        var hotspot = cordova.plugins.hotspot.getConnectionInfo(function(e){return e;}, function(err){return err;});
+        infos.innerHTML = hotspot;
+        console.log(wifi);
     },
     displayMap: function(){
         L.tileLayer('https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -70,9 +102,18 @@ var app = {
         map.on('locationerror', app.onLocationError);
         map.on('click', app.displayCircle);
     },
+    displayLoad: function(){
+        navigator.notification.alert(
+            "Loading, please wait",
+            null,
+            "Wifi Detect",
+            'Ok'
+        );
+    },
     onLocationFound: function(e){
-        userPos = e.latlong;
-        console.log('Vos coordonnées GPS', userPos);
+        console.log(e.latlng);
+        userPos = e.latlng;
+        console.log('Vos coordonnées GPS', userPos.lat, userPos.lng);
     },
     onLocationError: function(e){
         alert(e.message);
@@ -80,7 +121,7 @@ var app = {
     displayCircle: function(e){
         // dessiner les points sur la carte
         console.log(e);
-        circle = L.circle(e.latlng, 2, {
+        circle = L.circle(e.latlng, 0.5, {
             color: 'red',
             fillColor: '#f03',
             fillOpacity: 0.5
@@ -89,6 +130,7 @@ var app = {
     },
     onMapClick: function(e){
         // Ajouter un point sur la carte
+
     },
     onDelete: function(){
         // supprimer le dernier point

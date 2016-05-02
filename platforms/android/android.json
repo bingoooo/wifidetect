@@ -23,6 +23,22 @@
                         {
                             "xml": "<feature name=\"NetworkStatus\"><param name=\"android-package\" value=\"org.apache.cordova.networkinformation.NetworkManager\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"WifiUtils\"><param name=\"android-package\" value=\"org.apache.cordova.wifiutils.WifiUtils\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"HotSpotPlugin\"><param name=\"android-package\" value=\"de.martinreinhardt.cordova.plugins.hotspot.HotSpotPlugin\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Device\"><param name=\"android-package\" value=\"org.apache.cordova.device.Device\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Notification\"><param name=\"android-package\" value=\"org.apache.cordova.dialogs.Notification\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -46,6 +62,46 @@
                             "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
                             "count": 1
                         }
+                    ],
+                    "/manifest": [
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\" />",
+                            "count": 2
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
+                            "count": 2
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.INTERNET\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\" />",
+                            "count": 1
+                        }
+                    ],
+                    "application/activity": [
+                        {
+                            "xml": "<action android:name=\"android.net.conn.CONNECTIVITY_CHANGE\" />",
+                            "count": 1
+                        }
                     ]
                 }
             }
@@ -65,6 +121,21 @@
             "PACKAGE_NAME": "com.simplonco.benji.wifidetect"
         },
         "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.simplonco.benji.wifidetect"
+        },
+        "cordova-plugin-wifiutils": {
+            "PACKAGE_NAME": "com.simplonco.benji.wifidetect"
+        },
+        "cordova-plugin-hotspot": {
+            "PACKAGE_NAME": "com.simplonco.benji.wifidetect"
+        },
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.simplonco.benji.wifidetect"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.simplonco.benji.wifidetect"
+        },
+        "cordova-plugin-dialogs": {
             "PACKAGE_NAME": "com.simplonco.benji.wifidetect"
         }
     },
@@ -247,6 +318,41 @@
             "clobbers": [
                 "Connection"
             ]
+        },
+        {
+            "file": "plugins/cordova-plugin-wifiutils/www/wifiutils.js",
+            "id": "cordova-plugin-wifiutils.wifiutils",
+            "clobbers": [
+                "wifiutils"
+            ]
+        },
+        {
+            "file": "plugins/cordova-plugin-hotspot/www/HotSpotPlugin.js",
+            "id": "cordova-plugin-hotspot.HotSpotPlugin",
+            "clobbers": [
+                "cordova.plugins.hotspot"
+            ]
+        },
+        {
+            "file": "plugins/cordova-plugin-device/www/device.js",
+            "id": "cordova-plugin-device.device",
+            "clobbers": [
+                "device"
+            ]
+        },
+        {
+            "file": "plugins/cordova-plugin-dialogs/www/notification.js",
+            "id": "cordova-plugin-dialogs.notification",
+            "merges": [
+                "navigator.notification"
+            ]
+        },
+        {
+            "file": "plugins/cordova-plugin-dialogs/www/android/notification.js",
+            "id": "cordova-plugin-dialogs.notification_android",
+            "merges": [
+                "navigator.notification"
+            ]
         }
     ],
     "plugin_metadata": {
@@ -254,6 +360,11 @@
         "cordova-plugin-compat": "1.0.0",
         "cordova-plugin-geolocation": "2.2.0",
         "cordova-plugin-file": "4.2.0",
-        "cordova-plugin-network-information": "1.2.1"
+        "cordova-plugin-network-information": "1.2.1",
+        "cordova-plugin-wifiutils": "0.2.0",
+        "cordova-plugin-hotspot": "1.1.4",
+        "cordova-plugin-console": "1.0.3",
+        "cordova-plugin-device": "1.1.2",
+        "cordova-plugin-dialogs": "1.2.1"
     }
 }

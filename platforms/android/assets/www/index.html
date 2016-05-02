@@ -40,9 +40,15 @@
                 <p class="event received">Device is Ready</p>
             </div>
         </div> -->
+        <div id="wifi-bar"><canvas id="wifi"></canvas><button id="position">Intens</button><button id="router">Router</button></div>
         <div id="map">
         <p>Wifi Detect</p>
         </div>
+        <menu id="menu">
+            <p>Infos</p>
+            Votre position<span id="gps-infos"></span><button id="goto-user">Aller ici</button><br>
+            <span id="wifi-infos"></span><br>
+        </menu>
         <script type="text/javascript" src="leaflet-src.js"></script>
         <script type="text/javascript" src="leaflet.js"></script>
         <script type="text/javascript" src="cordova.js"></script>

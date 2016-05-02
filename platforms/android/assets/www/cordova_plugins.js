@@ -177,6 +177,41 @@ module.exports = [
         "clobbers": [
             "Connection"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-wifiutils/www/wifiutils.js",
+        "id": "cordova-plugin-wifiutils.wifiutils",
+        "clobbers": [
+            "wifiutils"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-hotspot/www/HotSpotPlugin.js",
+        "id": "cordova-plugin-hotspot.HotSpotPlugin",
+        "clobbers": [
+            "cordova.plugins.hotspot"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-device/www/device.js",
+        "id": "cordova-plugin-device.device",
+        "clobbers": [
+            "device"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-dialogs/www/notification.js",
+        "id": "cordova-plugin-dialogs.notification",
+        "merges": [
+            "navigator.notification"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-dialogs/www/android/notification.js",
+        "id": "cordova-plugin-dialogs.notification_android",
+        "merges": [
+            "navigator.notification"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -186,7 +221,12 @@ module.exports.metadata =
     "cordova-plugin-compat": "1.0.0",
     "cordova-plugin-geolocation": "2.2.0",
     "cordova-plugin-file": "4.2.0",
-    "cordova-plugin-network-information": "1.2.1"
+    "cordova-plugin-network-information": "1.2.1",
+    "cordova-plugin-wifiutils": "0.2.0",
+    "cordova-plugin-hotspot": "1.1.4",
+    "cordova-plugin-console": "1.0.3",
+    "cordova-plugin-device": "1.1.2",
+    "cordova-plugin-dialogs": "1.2.1"
 };
 // BOTTOM OF METADATA
 });
