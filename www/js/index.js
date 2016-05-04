@@ -93,10 +93,8 @@ var app = {
     },
     displayMap: function(){
         app.mapRefresh();
-        map.on('locationfound', app.onLocationFound);
-        map.on('locationerror', app.onLocationError);
-        map.on('click', app.onMapClick);
         var delButton = document.getElementById('delete').addEventListener('click', app.onDelete);
+        var refreshButton = document.getElementById('refresh').addEventListener('click', app.mapRefresh);
     },
     displayLoad: function(){
         navigator.notification.alert(
@@ -117,6 +115,7 @@ var app = {
         alert(e.message);
     },
     mapRefresh: function(){
+        // Rafraîchissement de la carte
         map.remove();
         map = L.map('map');
         L.tileLayer('https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -127,6 +126,12 @@ var app = {
         }).addTo(map);
         console.log(map);
         map.locate({setView: true, maxZoom: 16});
+        if (intensDatas.length > 0) {
+            intensDatas.map(app.displayCircle);
+        }
+        map.on('locationfound', app.onLocationFound);
+        map.on('locationerror', app.onLocationError);
+        map.on('click', app.onMapClick);
     },
     displayCircle: function(e){
         // dessiner les points sur la carte
@@ -145,11 +150,13 @@ var app = {
         app.displayCircle(e);
     },
     onDelete: function(){
-        // supprimer le dernier point
-        console.log('Last Point Deleted :', intensDatas.pop());
-        console.log('Datas', intensDatas);
-        var point = mapPoints.pop();
-        map.removeLayer(point);
+        // supprimer le dernier point si le tableau contient des données
+        if(mapPoints.length > 0) {
+            console.log('Last Point Deleted :', intensDatas.pop());
+            console.log('Datas', intensDatas);
+            var point = mapPoints.pop();
+            map.removeLayer(point);
+        }
     },
     onSetRouter: function(e){
         routerPos = e.latlng;
