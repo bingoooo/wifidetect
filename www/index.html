@@ -19,35 +19,24 @@
 -->
 <html>
     <head>
-        <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *"> -->
         <meta charset="utf-8">
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-        <!-- <link rel="stylesheet" type="text/css" href="css/index.css"> -->
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="leaflet.css">
 
-        <!-- <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.17.0/mapbox-gl.js'></script> -->
-        <!-- <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.17.0/mapbox-gl.css' rel='stylesheet' /> -->
         <title>Wifi Detect</title>
     </head>
     <body>
-        <!-- <div class="app">
-            <h1>Apache Cordova</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
-            </div>
-        </div> -->
-        <div id="wifi-bar"><canvas id="wifi"></canvas><button id="position">Intens</button><button id="router">Router</button></div>
+        <div id="wifi-bar"><canvas id="wifi"></canvas><button id="position">Intens</button><button id="router">Router</button><button id="delete">Delete Last</button></div>
         <div id="map">
         <p>Wifi Detect</p>
         </div>
         <menu id="menu">
             <p>Infos</p>
-            Votre position<span id="gps-infos"></span><button id="goto-user">Aller ici</button><br>
-            <span id="wifi-infos"></span><br>
+            <div>Votre position : <span id="gps-infos"></span> <button id="goto-user">Aller ici</button></div><br>
+            <div id="wifi-infos"></div><br>
         </menu>
         <script type="text/javascript" src="leaflet-src.js"></script>
         <script type="text/javascript" src="leaflet.js"></script>

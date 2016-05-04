@@ -26,8 +26,10 @@
 var map = L.map('map');
 var mapCenter;
 var userPos;
+var intensDatas = [];
 var routerPos;
 var circle;
+var mapPoints = [];
 
 var app = {
     // Application Constructor
@@ -70,6 +72,8 @@ var app = {
             "Wifi Detect",
             'Ok'
         );
+        app.displayMap();
+        app.displayWifi("No Level");
     },
     displayWifi: function(level){
         // Fonction d'affichage de la barre de niveau wifi (canvas)
@@ -81,7 +85,6 @@ var app = {
         ctx.fillText = (level, canvas.width / 2, canvas.height / 2);
         ctx.fillStyle = "black";
         ctx.stroke();
-        var infos = document.getElementById('gps-infos');
         var infos =  document.getElementById('wifi-infos');
         var wifi = cordova.plugins;
         var hotspot = cordova.plugins.hotspot.getConnectionInfo(function(e){return e;}, function(err){return err;});
@@ -89,18 +92,11 @@ var app = {
         console.log(wifi);
     },
     displayMap: function(){
-        L.tileLayer('https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={accessToken}', {
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-            maxZoom: 26,
-            id: 'wifidetect',
-            accessToken: 'pk.eyJ1Ijoib2JlaW5nIiwiYSI6ImNpbmpmYjY1eTAwNXF3MmtsN2I4bWwyN3gifQ.rzppEAcwRd89bvCmZGLWig'
-        }).addTo(map);
-        console.log(map);
-        map.locate({setView: true, maxZoom: 16});
-
+        app.mapRefresh();
         map.on('locationfound', app.onLocationFound);
         map.on('locationerror', app.onLocationError);
-        map.on('click', app.displayCircle);
+        map.on('click', app.onMapClick);
+        var delButton = document.getElementById('delete').addEventListener('click', app.onDelete);
     },
     displayLoad: function(){
         navigator.notification.alert(
@@ -114,26 +110,46 @@ var app = {
         console.log(e.latlng);
         userPos = e.latlng;
         console.log('Vos coordonnées GPS', userPos.lat, userPos.lng);
+        var infos = document.getElementById('gps-infos');
+        infos.innerHTML = userPos.lat + " " + userPos.lng;
     },
     onLocationError: function(e){
         alert(e.message);
     },
+    mapRefresh: function(){
+        map.remove();
+        map = L.map('map');
+        L.tileLayer('https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            maxZoom: 26,
+            id: 'wifidetect',
+            accessToken: 'pk.eyJ1Ijoib2JlaW5nIiwiYSI6ImNpbmpmYjY1eTAwNXF3MmtsN2I4bWwyN3gifQ.rzppEAcwRd89bvCmZGLWig'
+        }).addTo(map);
+        console.log(map);
+        map.locate({setView: true, maxZoom: 16});
+    },
     displayCircle: function(e){
         // dessiner les points sur la carte
-        console.log(e);
         circle = L.circle(e.latlng, 0.5, {
             color: 'red',
             fillColor: '#f03',
             fillOpacity: 0.5
         }).addTo(map);
+        mapPoints.push(circle);
         console.log(circle);
     },
     onMapClick: function(e){
         // Ajouter un point sur la carte
-
+        intensDatas.push(e);
+        console.log('datas', intensDatas);
+        app.displayCircle(e);
     },
     onDelete: function(){
         // supprimer le dernier point
+        console.log('Last Point Deleted :', intensDatas.pop());
+        console.log('Datas', intensDatas);
+        var point = mapPoints.pop();
+        map.removeLayer(point);
     },
     onSetRouter: function(e){
         routerPos = e.latlng;
