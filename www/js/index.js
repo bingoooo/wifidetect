@@ -23,23 +23,18 @@
 
 // var APP_STORAGE_KEY = "exampleAppState";
 
-var map = L.map('map');
-var mapCenter;
-var userPos;
-var intensDatas = [];
-var routerPos;
-var circle;
-var mapPoints = [];
+var map = L.map('map'); // Variable contenant les définitions de la carte
+var mapCenter;          // Varible définissant le centre de la carte
+var userPos;            // Geolocalisation de l'utilisateur
+var intensDatas = [];   // Localisation des différents points de la carte
+var routerPos;          // Position du routeur
+var mapPoints = [];     // Layers Points de la carte
+var pointsColors = []   // Couleurs des points sur la carte
 
 var app = {
-    // Application Constructor
     initialize: function() {
         this.bindEvents();
     },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
         document.addEventListener('pause', this.onPause, false);
@@ -75,8 +70,8 @@ var app = {
         app.displayMap();
         app.displayWifi("No Level");
     },
+    // Fonction d'affichage de la barre de niveau wifi (canvas)
     displayWifi: function(level){
-        // Fonction d'affichage de la barre de niveau wifi (canvas)
         var canvas = document.getElementById('wifi');
         var ctx = document.getElementById('wifi').getContext("2d");
         ctx.font = "12px serif";
@@ -109,13 +104,13 @@ var app = {
         userPos = e.latlng;
         console.log('Vos coordonnées GPS', userPos.lat, userPos.lng);
         var infos = document.getElementById('gps-infos');
-        infos.innerHTML = userPos.lat + " " + userPos.lng;
+        infos.innerHTML = "lat: " userPos.lat + ", long: " + userPos.lng;
     },
     onLocationError: function(e){
         alert(e.message);
     },
+    // Rafraîchissement de la carte
     mapRefresh: function(){
-        // Rafraîchissement de la carte
         map.remove();
         map = L.map('map');
         L.tileLayer('https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -133,9 +128,9 @@ var app = {
         map.on('locationerror', app.onLocationError);
         map.on('click', app.onMapClick);
     },
+    // dessiner les points sur la carte
     displayCircle: function(e){
-        // dessiner les points sur la carte
-        circle = L.circle(e.latlng, 0.5, {
+        var circle = L.circle(e.latlng, 0.5, {
             color: 'red',
             fillColor: '#f03',
             fillOpacity: 0.5
@@ -143,14 +138,14 @@ var app = {
         mapPoints.push(circle);
         console.log(circle);
     },
+    // Ajouter un point sur la carte
     onMapClick: function(e){
-        // Ajouter un point sur la carte
         intensDatas.push(e);
         console.log('datas', intensDatas);
         app.displayCircle(e);
     },
+    // supprimer le dernier point si le tableau contient des données
     onDelete: function(){
-        // supprimer le dernier point si le tableau contient des données
         if(mapPoints.length > 0) {
             console.log('Last Point Deleted :', intensDatas.pop());
             console.log('Datas', intensDatas);
