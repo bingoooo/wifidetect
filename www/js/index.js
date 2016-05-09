@@ -27,9 +27,11 @@ var map = L.map('map'); // Variable contenant les définitions de la carte
 var mapCenter;          // Varible définissant le centre de la carte
 var userPos;            // Geolocalisation de l'utilisateur
 var intensDatas = [];   // Localisation des différents points de la carte
+var routerInfos;
 var routerPos;          // Position du routeur
 var mapPoints = [];     // Layers Points de la carte
-var pointsColors = []   // Couleurs des points sur la carte
+var pointsColors = [];   // Couleurs des points sur la carte
+var NTDisplay;
 
 var app = {
     initialize: function() {
@@ -61,6 +63,7 @@ var app = {
         };
     },
     onResume: function(){
+        clearInterval(NTDisplay);
         navigator.notification.alert(
             "Application Resumed",
             null,
@@ -68,28 +71,25 @@ var app = {
             'Ok'
         );
         app.displayMap();
-        app.displayWifi("No Level");
+        app.displayWifi();
     },
     // Fonction d'affichage de la barre de niveau wifi (canvas)
-    displayWifi: function(level){
-        var canvas = document.getElementById('wifi');
-        var ctx = document.getElementById('wifi').getContext("2d");
-        ctx.font = "12px serif";
-        ctx.fillStyle = "red";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillText = (level, canvas.width / 2, canvas.height / 2);
-        ctx.fillStyle = "black";
-        ctx.stroke();
-        var infos =  document.getElementById('wifi-infos');
-        var wifi = cordova.plugins;
-        var hotspot = cordova.plugins.hotspot.getConnectionInfo(function(e){return e;}, function(err){return err;});
-        infos.innerHTML = hotspot;
-        console.log(wifi);
+    displayWifi: function(){
+        if(routerPos != null){
+            var canvas = document.getElementById('wifi');
+            var ctx = document.getElementById('wifi').getContext("2d");
+            ctx.font = "12px serif";
+            ctx.fillStyle = "red";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.stroke();
+        }
     },
     displayMap: function(){
         app.mapRefresh();
         var delButton = document.getElementById('delete').addEventListener('click', app.onDelete);
         var refreshButton = document.getElementById('refresh').addEventListener('click', app.mapRefresh);
+        var gotoButton = document.getElementById('goto-user').addEventListener('click', app.gotoUser);
+        var routerButton = document.getElementById('router').addEventListener('click', app.getRouters);
     },
     displayLoad: function(){
         navigator.notification.alert(
@@ -100,17 +100,17 @@ var app = {
         );
     },
     onLocationFound: function(e){
-        console.log(e.latlng);
         userPos = e.latlng;
         console.log('Vos coordonnées GPS', userPos.lat, userPos.lng);
         var infos = document.getElementById('gps-infos');
-        infos.innerHTML = "lat: " userPos.lat + ", long: " + userPos.lng;
+        infos.innerHTML = "lat: " + userPos.lat + ", long: " + userPos.lng;
     },
     onLocationError: function(e){
         alert(e.message);
     },
     // Rafraîchissement de la carte
     mapRefresh: function(){
+        document.getElementById('wifi-infos').innerHTML = '';
         map.remove();
         map = L.map('map');
         L.tileLayer('https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -119,7 +119,6 @@ var app = {
             id: 'wifidetect',
             accessToken: 'pk.eyJ1Ijoib2JlaW5nIiwiYSI6ImNpbmpmYjY1eTAwNXF3MmtsN2I4bWwyN3gifQ.rzppEAcwRd89bvCmZGLWig'
         }).addTo(map);
-        console.log(map);
         map.locate({setView: true, maxZoom: 16});
         if (intensDatas.length > 0) {
             intensDatas.map(app.displayCircle);
@@ -129,9 +128,9 @@ var app = {
         map.on('click', app.onMapClick);
     },
     // dessiner les points sur la carte
-    displayCircle: function(e){
+    displayCircle: function(e, color){
         var circle = L.circle(e.latlng, 0.5, {
-            color: 'red',
+            color: color,
             fillColor: '#f03',
             fillOpacity: 0.5
         }).addTo(map);
@@ -141,8 +140,9 @@ var app = {
     // Ajouter un point sur la carte
     onMapClick: function(e){
         intensDatas.push(e);
+        pointsColors.push('red');
         console.log('datas', intensDatas);
-        app.displayCircle(e);
+        app.displayCircle(e, 'red');
     },
     // supprimer le dernier point si le tableau contient des données
     onDelete: function(){
@@ -155,6 +155,40 @@ var app = {
     },
     onSetRouter: function(e){
         routerPos = e.latlng;
+    },
+    gotoUser: function(){
+        // go to user location
+        if(userPos != 'undefined'){
+        map.setView(userPos);
+        }
+    },
+    getRouters: function(){
+        app.scan();
+        app.displayWifi();
+    },
+    // fonction scan des réseaux wifi
+    scan: function(){
+        cordova.plugins.hotspot.scanWifi(
+            function(e){
+                console.log('ok : ', e);
+                var infos =  document.getElementById('wifi-infos');
+                var wifi = {datas: e};
+                var tpl = document.getElementById('tpl').innerHTML;
+                var html = Mustache.render(tpl, wifi);
+                console.log('render :', html);
+                infos.innerHTML = html;
+                var refreshList = document.getElementById('refresh-list').addEventListener('click', app.scan);
+                var select = document.getElementsByClassName('network');
+                for(var i = 0; i < select.length; i++){
+                    select[i].addEventListener('click', function(){console.log('clicked')});
+                    console.log(i);
+                }
+                console.log(select);
+            },
+            function(err){
+                console.log('Erreur', err);
+            }
+        );
     }
 };
 

@@ -29,18 +29,31 @@
         <title>Wifi Detect</title>
     </head>
     <body>
-        <div id="wifi-bar"><canvas id="wifi"></canvas><button id="position">Intens</button><button id="router">Router</button><button id="delete">Delete Last</button><button id="refresh">Refresh Map</button></div>
+        <div id="wifi-bar"><canvas id="wifi"></canvas><button id="position">Intens</button><button id="router">Router</button><button id="delete">Delete Last</button><button id="refresh">Map</button></div>
+        <div id="wifi-infos"></div>
         <div id="map">
         <p>Wifi Detect</p>
         </div>
         <menu id="menu">
-            <p>Infos</p>
-            <div>Votre position : <span id="gps-infos"></span> <button id="goto-user">Aller ici</button></div><br>
-            <div id="wifi-infos"></div><br>
+            <div>Position : <span id="gps-infos"></span> <button id="goto-user">Aller ici</button></div><br>
+            <div>Réseau : <span id="selected-network"></span></div>
         </menu>
+        <script type="text/javascript" src="js/mustache.js"></script>
         <script type="text/javascript" src="leaflet-src.js"></script>
         <script type="text/javascript" src="leaflet.js"></script>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
+        <script id="tpl" type="text/plain">
+        <table class="network-list">
+        {{# datas}}
+            <tr class="network">
+                <td class="network-ssid">{{ SSID }}</td>
+                <td class="network-frequency">{{ frequency }}</td>
+                <td class="network-level">{{ level }}</td>
+            </tr>
+        {{/ datas}}
+        </table>
+        <button id="refresh-list">REFRESH</button>
+        </script>
     </body>
 </html>
